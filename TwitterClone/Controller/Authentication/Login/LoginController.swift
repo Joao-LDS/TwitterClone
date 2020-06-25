@@ -12,42 +12,33 @@ class LoginController: UIViewController {
 
     // MARK: - Properties
     
-    lazy var logoImageView: UIImageView = {
+    private let logoImageView: UIImageView = {
         let image = UIImageView()
         return image
     }()
 
-    lazy var stackView: UIStackView = {
+    private let stackView: UIStackView = {
         let stackView = UIStackView()
         return stackView
     }()
     
-    lazy var emailView: UIView = {
-        let image = #imageLiteral(resourceName: "ic_mail_outline_white_2x-1")
-        let textField = UITextField()
-        textField.placeholder = "Email"
-        let view = InputView(image: image, textField: textField)
-        return view
+    private let emailTextField: UITextField = {
+        let tf = UITextField()
+        return tf
     }()
     
-    lazy var passwordView: UIView = {
-        let image = #imageLiteral(resourceName: "ic_lock_outline_white_2x")
-        let textField = UITextField()
-        textField.placeholder = "Password"
-        let view = InputView(image: image, textField: textField)
-        return view
+    private let passwordTextField: UITextField = {
+        let tf = UITextField()
+        return tf
     }()
     
-//    
-//    lazy var containerEmail: UIView = {
-//        let view = UIImageView()
-//        return view
-//    }()
-//    
-//    lazy var containerPassword: UIView = {
-//        let view = UIView()
-//        return view
-//    }()
+    private lazy var emailView = InputView(image: #imageLiteral(resourceName: "ic_mail_outline_white_2x-1"), textField: emailTextField, placeHolder: "Email", secureText: true)
+ 
+    private lazy var passwordView = InputView(image: #imageLiteral(resourceName: "ic_lock_outline_white_2x"), textField: passwordTextField, placeHolder: "Password", secureText: true)
+
+    private let loginButton = Button(title: "Log In")
+    
+    private let dontHaveAccountButton = AccountButton(firstText: "Don't have an account?", secondText: " Sign Up")
     
     // MARK: - Lifecycle
     
@@ -57,6 +48,15 @@ class LoginController: UIViewController {
     }
 
     // MARK: - Selectors
+    
+    @objc func handleLogin() {
+        print(123)
+    }
+    
+    @objc func handleSignUp() {
+        let registrationController = RegistrationController()
+        navigationController?.pushViewController(registrationController, animated: true)
+    }
     
     // MARK: - Functions
     
@@ -73,20 +73,22 @@ extension LoginController: ViewConfiguration {
     
     func buildView() {
         view.addSubview(logoImageView)
-//        stackView.addArrangedSubview(containerEmail)
         stackView.addArrangedSubview(emailView)
         stackView.addArrangedSubview(passwordView)
+        stackView.addArrangedSubview(loginButton)
         view.addSubview(stackView)
+        view.addSubview(dontHaveAccountButton)
     }
     
     func addConstraints() {
-        logoImageView.centerX(inView: view, topAnchor: view.safeAreaLayoutGuide.topAnchor)
+        logoImageView.centerX(inView: view, topAnchor: view.safeAreaLayoutGuide.topAnchor, paddingTop: 20)
         logoImageView.setDimensions(width: 150, height: 150)
         
-//        containerEmail.anchor(height: 50)
-//        containerPassword.anchor(height: 50)
-//        
-        stackView.anchor(top: logoImageView.bottomAnchor, left: view.leftAnchor, right: view.rightAnchor)
+        stackView.anchor(top: logoImageView.bottomAnchor, left: view.leftAnchor, right: view.rightAnchor, paddingTop: 20, paddingLeft: 32, paddingRight: 32)
+        
+        loginButton.anchor(left: stackView.leftAnchor, bottom: stackView.bottomAnchor, right: stackView.rightAnchor, height: 50)
+        
+        dontHaveAccountButton.anchor(left: view.leftAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, right: view.rightAnchor, paddingLeft: 40, paddingBottom: 16, paddingRight: 40)
     }
     
     func additionalConfiguration() {
@@ -98,10 +100,12 @@ extension LoginController: ViewConfiguration {
         logoImageView.image = #imageLiteral(resourceName: "TwitterLogo")
         
         stackView.axis = .vertical
-        stackView.spacing = 8
-//        
-//        containerEmail.backgroundColor = .red
-//        containerPassword.backgroundColor = .black
+        stackView.spacing = 20
+        stackView.distribution = .fillEqually
+       
+        loginButton.addTarget(self, action: #selector(handleLogin), for: .touchUpInside)
+        
+        dontHaveAccountButton.addTarget(self, action: #selector(handleSignUp), for: .touchUpInside)
     }
     
 }
